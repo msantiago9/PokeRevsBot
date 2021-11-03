@@ -83,7 +83,7 @@ async def __pokeapi(ctx, *args):
         for i in range(len(data['moves'])):
             moves.append(data['moves'][i]['move']['name'])
         for i in range(len(data['types'])):
-            types.append(data['moves'][i]['type']['name'])
+            types.append(data['types'][i]['type']['name'])
 
         message = """
         `{}`
