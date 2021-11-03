@@ -66,6 +66,37 @@ async def __help(ctx):
     await ctx.send(commands)
 
 
+@client.command(aliases=['api'])
+async def __pokeapi(ctx, *args):
+    if len(args) == 0:
+        await ctx.send("https://pokeapi.co/")
+        return
+    endpoint = "https://pokeapi.co/api/v2/pokemon/".join(args[0])
+    response = requests.get(endpoint)
+    data = json.loads(response.text)
+    if data:
+        ability_list = []
+        moves = []
+        types = []
+        for i in range(len(data['abilities'])):
+            ability_list.append(i['ability']['name'])
+        for i in range(len(data['moves'])):
+            moves.append(i['move']['name'])
+        for i in range(len(data['types'])):
+            types.append(i['type']['name'])
+
+        message = """
+        `{}`
+        Abilities: {}
+        Moves: {}
+        Types: {}
+        """.format(args[0], ", ".join(ability_list), ", ".join(moves), ", ".join(types))
+
+        await ctx.send(message)
+        return
+    await ctx.send("No such pokemon: " + args[0])
+
+
 @client.event
 async def on_ready():
     print(f"logged in as {client.user}")
