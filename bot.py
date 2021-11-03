@@ -18,9 +18,23 @@ def get_quote():
     return quote
 
 
+def get_joke():
+    response = requests.get("https://v2.jokeapi.dev/joke/Any")
+    data = json.loads(response.text)
+    if data['type'] == 'twopart':
+        joke = data['setup'] + " " + data['delivery']
+        return joke
+    return data['joke']
+
+
 @client.command(aliases=['quote', 'q'])
 async def __remember(ctx):
     await ctx.send(get_quote())
+
+
+@client.command(aliases=['joke', 'j'])
+async def __joke(ctx):
+    await ctx.send(get_joke())
 
 
 @client.command(aliases=[''])
