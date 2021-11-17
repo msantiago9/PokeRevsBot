@@ -4,6 +4,7 @@ import json
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv, find_dotenv
+from random import randint
 
 load_dotenv(find_dotenv())
 intents = discord.Intents.default()
@@ -52,6 +53,15 @@ async def __repo(ctx):
 async def __heroku(ctx):
     url = os.getenv('APP')
     await ctx.send(url)
+
+
+@client.command(aliases=['party'])
+async def __party(ctx):
+    party_gifs = ['https://cdn.discordapp.com/attachments/595772150078767106/910374273288376330/pikachu-dancing.gif',
+                  'https://cdn.discordapp.com/attachments/595772150078767106/910374273334525962/IncompatibleTautAcaciarat-max-1mb.gif',
+                  'https://cdn.discordapp.com/attachments/595772150078767106/910374270545309746/dancing-pikachu-gif-11.gif', ]
+    choice = randint(0, len(party_gifs)-1)
+    await ctx.send(party_gifs[choice])
 
 
 @client.command(aliases=['emails', 'e', 'email', 'e-mail', 'gmail', 'gmails', 'mail', 'mails', 'contact', 'contacts'])
