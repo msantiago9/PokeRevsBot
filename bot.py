@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv, find_dotenv
 from random import randint
+from secrets import choice
 
 load_dotenv(find_dotenv())
 intents = discord.Intents.default()
@@ -15,69 +16,103 @@ client = commands.Bot(command_prefix=".", intents=intents, help_command=None)
 def get_quote():
     response = requests.get("https://zenquotes.io/api/random")
     data = json.loads(response.text)
-    quote = data[0]['q'] + " -" + data[0]['a']
+    quote = data[0]["q"] + " -" + data[0]["a"]
     return quote
 
 
 def get_joke():
     response = requests.get("https://v2.jokeapi.dev/joke/Any")
     data = json.loads(response.text)
-    if data['type'] == 'twopart':
-        joke = data['setup'] + " " + data['delivery']
+    if data["type"] == "twopart":
+        joke = data["setup"] + " " + data["delivery"]
         return joke
-    return data['joke']
+    return data["joke"]
 
 
-@client.command(aliases=['quote', 'q'])
+@client.command(aliases=["quote", "q"])
 async def __remember(ctx):
     await ctx.send(get_quote())
 
 
-@client.command(aliases=['joke', 'j'])
+@client.command(aliases=["joke", "j"])
 async def __joke(ctx):
     await ctx.send(get_joke())
 
 
-@client.command(aliases=[''])
+@client.command(aliases=[""])
 async def __nil(ctx):
     await ctx.send("...")
 
 
-@client.command(aliases=['git', 'g', 'github', 'project', 'repo', 'repository'])
+@client.command(aliases=["git", "g", "github", "project", "repo", "repository"])
 async def __repo(ctx):
-    repo = os.getenv('REPO')
+    repo = os.getenv("REPO")
     await ctx.send(repo)
 
 
-@client.command(aliases=['heroku', 'app', 'h', 'deploy'])
+@client.command(aliases=["heroku", "app", "h", "deploy"])
 async def __heroku(ctx):
-    url = os.getenv('APP')
+    url = os.getenv("APP")
     await ctx.send(url)
 
 
-@client.command(aliases=['party'])
+@client.command(aliases=["party"])
 async def __party(ctx):
-    party_gifs = ['https://cdn.discordapp.com/attachments/595772150078767106/910374273288376330/pikachu-dancing.gif',
-                  'https://cdn.discordapp.com/attachments/595772150078767106/910374273334525962/IncompatibleTautAcaciarat-max-1mb.gif',
-                  'https://cdn.discordapp.com/attachments/595772150078767106/910374270545309746/dancing-pikachu-gif-11.gif', ]
-    choice = randint(0, len(party_gifs)-1)
-    await ctx.send(party_gifs[choice])
+    party_gifs = [
+        "https://cdn.discordapp.com/attachments/595772150078767106/910374273288376330/pikachu-dancing.gif",
+        "https://cdn.discordapp.com/attachments/595772150078767106/910374273334525962/IncompatibleTautAcaciarat-max-1mb.gif",
+        "https://cdn.discordapp.com/attachments/595772150078767106/910374270545309746/dancing-pikachu-gif-11.gif",
+    ]
+    await ctx.send(choice(party_gifs))
 
 
-@client.command(aliases=['emails', 'e', 'email', 'e-mail', 'gmail', 'gmails', 'mail', 'mails', 'contact', 'contacts'])
+@client.command(aliases=["hello"])
+async def __hello(ctx):
+    await ctx.send("hi")
+
+
+@client.command(
+    aliases=[
+        "goodbye",
+        "bye",
+        "adios",
+        "seeya",
+    ]
+)
+async def __goodbye(ctx):
+    await ctx.send(
+        "https://cdn.discordapp.com/attachments/595772150078767106/916008659195162704/sad-pikachu.gif"
+    )
+    await ctx.send("Bye bye...")
+
+
+@client.command(
+    aliases=[
+        "emails",
+        "e",
+        "email",
+        "e-mail",
+        "gmail",
+        "gmails",
+        "mail",
+        "mails",
+        "contact",
+        "contacts",
+    ]
+)
 async def __emails(ctx):
-    emails = os.getenv('EMAILS')
+    emails = os.getenv("EMAILS")
     await ctx.send(emails)
 
 
-@client.command(aliases=['help', 'commands', 'c', 'command', '?'])
+@client.command(aliases=["help", "commands", "c", "command", "?"])
 async def __help(ctx):
-    commands = os.getenv('COMMANDS')
+    commands = os.getenv("COMMANDS")
     await ctx.send(commands)
 
 
-@client.command(aliases=['api'])
-async def __pokeapi(ctx, *args):
+@client.command(aliases=["api"])
+async def __pokeapi(ctx, *args: list[str]):
     if len(args) == 0:
         await ctx.send("https://pokeapi.co/")
         return
@@ -88,20 +123,28 @@ async def __pokeapi(ctx, *args):
         ability_list = []
         moves = []
         types = []
-        for i in range(len(data['abilities'])):
-            ability_list.append(data['abilities'][i]['ability']['name'])
-        for i in range(len(data['moves'])):
-            moves.append(data['moves'][i]['move']['name'])
-        for i in range(len(data['types'])):
-            types.append(data['types'][i]['type']['name'])
+        for i in range(len(data["abilities"])):
+            ability_list.append(data["abilities"][i]["ability"]["name"])
+        for i in range(len(data["moves"])):
+            moves.append(data["moves"][i]["move"]["name"])
+        for i in range(len(data["types"])):
+            types.append(data["types"][i]["type"]["name"])
 
         message = """
-        `{}`
+        **{}**
         Abilities: {}
         Moves: {}
         Types: {}
-        """.format(args[0], ", ".join(ability_list), ", ".join(moves), ", ".join(types))
+        PokeRevs: {}
+        """.format(
+            data["name"],
+            ", ".join(ability_list),
+            ", ".join(moves),
+            ", ".join(types),
+            f"http://pokerevs2.herokuapp.com/pokemon/{data[id]}",
+        )
 
+        await ctx.send(data["sprites"]["other"]["official-artwork"]["front_default"])
         await ctx.send(message)
         return
     await ctx.send("No such pokemon: " + args[0])
@@ -111,4 +154,5 @@ async def __pokeapi(ctx, *args):
 async def on_ready():
     print(f"logged in as {client.user}")
 
-client.run(os.getenv('BOT_TOKEN'))
+
+client.run(os.getenv("BOT_TOKEN"))
