@@ -147,7 +147,7 @@ async def __pokeapi(ctx, *args):
             title=data["name"].title(),
             description=flavor_text,
             colour=discord.Colour.blue(),
-            url="http://pokerevs2.herokuapp.com/pokemon/{data['id']}"
+            url=f"http://pokerevs2.herokuapp.com/pokemon/{data['id']}"
         )
 
         message.set_footer(text="Powered by PokeRevs",
