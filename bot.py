@@ -142,7 +142,7 @@ async def __pokeapi(ctx, *args):
             ", ".join(ability_list),
             ", ".join(moves),
             ", ".join(types),
-            f"http://pokerevs2.herokuapp.com/pokemon/{data[id]}",
+            f"http://pokerevs2.herokuapp.com/pokemon/{data['id']}",
         )
 
         await ctx.send(data["sprites"]["other"]["official-artwork"]["front_default"])
