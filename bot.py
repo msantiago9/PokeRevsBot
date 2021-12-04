@@ -117,6 +117,7 @@ async def __pokeapi(ctx, *args: list[str]):
         await ctx.send("https://pokeapi.co/")
         return
     endpoint = "https://pokeapi.co/api/v2/pokemon/" + str(args[0])
+    print(endpoint)
     response = requests.get(endpoint)
     data = json.loads(response.text)
     if data:
