@@ -1,10 +1,10 @@
 import os
+import secrets
 import requests
 import json
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv, find_dotenv
-from random import randint
 from secrets import choice
 
 load_dotenv(find_dotenv())
@@ -116,39 +116,50 @@ async def __pokeapi(ctx, *args):
     if len(args) == 0:
         await ctx.send("https://pokeapi.co/")
         return
-    endpoint = "https://pokeapi.co/api/v2/pokemon/" + ''.join(str(args[0]))
-    print(endpoint)
-    response = requests.get(endpoint)
+
+    channel = ctx.message.channel
+    e1 = "https://pokeapi.co/api/v2/pokemon/" + ''.join(str(args[0]))
+    e2 = "https://pokeapi.co/api/v2/pokemon-species/" + ''.join(str(args[0]))
+    response = requests.get(e1)
+    response2 = requests.get(e2)
     data = json.loads(response.text)
-    if data:
+    data2 = json.loads(response2.text)
+    if data and data2:
         ability_list = []
-        moves = []
         types = []
+        flavor_texts = []
+        hit = False
         for i in range(len(data["abilities"])):
             ability_list.append(data["abilities"][i]["ability"]["name"])
-        for i in range(len(data["moves"])):
-            moves.append(data["moves"][i]["move"]["name"])
         for i in range(len(data["types"])):
             types.append(data["types"][i]["type"]["name"])
+        for i in range(len(data2['flavor_text_entries'])):
+            if data2['flavor_text_entries'][i]['language']['name'] == 'en':
+                flavor_texts.append(
+                    data2['flavor_text_entries'][i]['flavor_text'])
+                hit = True
 
-        message = """
-        **{}**
-        Abilities: {}
-        Moves: {}
-        Types: {}
-        PokeRevs: {}
-        """.format(
-            data["name"],
-            ", ".join(ability_list),
-            ", ".join(moves),
-            ", ".join(types),
-            f"http://pokerevs2.herokuapp.com/pokemon/{data['id']}",
+        flavor_text = secrets.choice(flavor_texts) if hit else ""
+        img = data["sprites"]["other"]["official-artwork"]["front_default"]
+        sprite = data["sprites"]["other"]["front_default"]
+
+        message = discord.Embed(
+            title=data["name"],
+            description=flavor_text,
+            colour=discord.Colour.blue(),
+            url="http://pokerevs2.herokuapp.com/pokemon/{data['id']}"
         )
 
-        await ctx.send(data["sprites"]["other"]["official-artwork"]["front_default"])
-        await ctx.send(message)
-        return
-    await ctx.send("No such pokemon: " + args[0])
+        message.set_footer("Powered by PokeRevs")
+        message.set_thumbnail(url=sprite)
+        message.set_image(url=img)
+        message.add_field(name='Types', value=', '.join(types), inline=False)
+        message.add_field(name='Abilities', value=', '.join(
+            ability_list), inline=True)
+        message.set_author(name="PokeRevs Customer Support", url="https://github.com/msantiago9/PokeRevsBot/",
+                           icon_url="https://cdn.discordapp.com/avatars/905312596683522058/f4f3176be9aa627c59d475afa16c2420.png")
+
+        await client.send_message(channel, embed=message)
 
 
 @client.event
