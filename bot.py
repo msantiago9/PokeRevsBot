@@ -160,7 +160,7 @@ async def __pokeapi(ctx, *args):
         message.set_author(name="PokeRevs Customer Support", url="https://github.com/msantiago9/PokeRevsBot/",
                            icon_url="https://cdn.discordapp.com/avatars/905312596683522058/f4f3176be9aa627c59d475afa16c2420.png")
 
-        await client.send_message(channel, embed=message)
+        await ctx.send(embed=message)
 
 
 @client.event
