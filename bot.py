@@ -150,7 +150,8 @@ async def __pokeapi(ctx, *args):
             url="http://pokerevs2.herokuapp.com/pokemon/{data['id']}"
         )
 
-        message.set_footer("Powered by PokeRevs")
+        message.set_footer(text="Powered by PokeRevs",
+                           icon_url="https://cdn.discordapp.com/attachments/903150000568152085/916572244237504542/detective.png")
         message.set_thumbnail(url=sprite)
         message.set_image(url=img)
         message.add_field(name='Types', value=', '.join(types), inline=False)
