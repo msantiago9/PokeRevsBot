@@ -144,7 +144,7 @@ async def __pokeapi(ctx, *args):
         sprite = data["sprites"]["front_default"]
 
         message = discord.Embed(
-            title=data["name"],
+            title=data["name"].title(),
             description=flavor_text,
             colour=discord.Colour.blue(),
             url="http://pokerevs2.herokuapp.com/pokemon/{data['id']}"
@@ -161,6 +161,13 @@ async def __pokeapi(ctx, *args):
                            icon_url="https://cdn.discordapp.com/avatars/905312596683522058/f4f3176be9aa627c59d475afa16c2420.png")
 
         await ctx.send(embed=message)
+
+
+@client.event
+async def on_guild_join(guild):
+    print(f"joined server {guild.name}, owner: {guild.owner.name}")
+    channel = guild.system_channel
+    await channel.send('https://cdn.discordapp.com/attachments/595772150078767106/910374273288376330/pikachu-dancing.gif')
 
 
 @client.event
