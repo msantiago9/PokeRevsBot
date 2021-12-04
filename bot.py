@@ -164,6 +164,11 @@ async def __pokeapi(ctx, *args):
         await ctx.send(embed=message)
 
 
+@client.command(aliases=['invite', 'i'])
+async def __invite(ctx):
+    await ctx.send('<https://discord.com/api/oauth2/authorize?client_id=905312596683522058&permissions=395137252352&scope=bot>')
+
+
 @client.event
 async def on_guild_join(guild):
     print(f"joined server {guild.name}, owner: {guild.owner.name}")
