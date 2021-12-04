@@ -118,8 +118,9 @@ async def __pokeapi(ctx, *args):
         return
 
     channel = ctx.message.channel
-    e1 = "https://pokeapi.co/api/v2/pokemon/" + ''.join(str(args[0]))
-    e2 = "https://pokeapi.co/api/v2/pokemon-species/" + ''.join(str(args[0]))
+    e1 = "https://pokeapi.co/api/v2/pokemon/" + ''.join(str(args[0])).lower()
+    e2 = "https://pokeapi.co/api/v2/pokemon-species/" + \
+        ''.join(str(args[0])).lower()
     response = requests.get(e1)
     response2 = requests.get(e2)
     data = json.loads(response.text)
