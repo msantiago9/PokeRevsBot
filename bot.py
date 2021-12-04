@@ -141,7 +141,7 @@ async def __pokeapi(ctx, *args):
 
         flavor_text = secrets.choice(flavor_texts) if hit else ""
         img = data["sprites"]["other"]["official-artwork"]["front_default"]
-        sprite = data["sprites"]["other"]["front_default"]
+        sprite = data["sprites"]["front_default"]
 
         message = discord.Embed(
             title=data["name"],
