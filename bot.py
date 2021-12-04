@@ -112,7 +112,7 @@ async def __help(ctx):
 
 
 @client.command(aliases=["api"])
-async def __pokeapi(ctx, *args: list[str]):
+async def __pokeapi(ctx, *args):
     if len(args) == 0:
         await ctx.send("https://pokeapi.co/")
         return
